@@ -1,0 +1,26 @@
+### main.c ###
+(1) setup
+We take the security parameter K(qbits, rbits) to get the system parameter, i.e. The master key of Public Key Generator (PKG).
+The PKG also publishs two parameters (Know to all users):
+* M: a finite message space
+* C: a finite cipertext space
+
+(2)Extract
+The receiver get his private key from PKG
+
+(3)Encrypt
+The sender will generate a cipertext based on the receiver's ID
+
+(4)Decrypt
+The receiver will use his private key to get the message digest
+
+###Versions of IDE###
+(1) BasicIdent
+* H1: Element built-in function (element from hash)
+* H2: SHA1 function generate 160bits number
+* Using Type A elliptic curve to generate pairing
+
+(2) FullIdent
+* With above
+* H3: Concatenate the sigma and the message digest, then put it into built-in function element random which is chosen between [0,q]
+* H4: Input a 160bits long number to generate another 160 bits number by using H2. 
