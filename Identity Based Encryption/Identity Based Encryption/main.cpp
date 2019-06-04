@@ -92,15 +92,14 @@ void decryption(element_t Sid, pairing_t pairing, element_t U, char* V,
     
 }
 
-void setup_sys(int rbits,int qbits,element_t P,element_t Ppub,pairing_t pairing,element_t s )
+void setup_sys(int rbits,int qbits, element_t P,element_t Ppub,pairing_t pairing,element_t s )
 {
     
     pbc_param_t par;   //Parameter to generate the pairing
     pbc_param_init_a_gen(par, rbits, qbits); //Initial the parameter for the pairing
     pairing_init_pbc_param(pairing, par);   //Initial the pairing
     
-    
-    //In our case, the pairing must be symmetric
+    //Using symmetric pairing
     if (!pairing_is_symmetric(pairing))
         pbc_die("pairing must be symmetric");
     
@@ -134,17 +133,17 @@ int main()
     mpz_init(messagehash);
     
     printf("\n############SETUP############\n");
-    printf("Please enter rbits:");
+    printf("Please enter security parameter \'rbits\':");
     scanf("%[0-9]", rbits);
     getchar();
-    printf("\nPlease enter qbits:");
+    printf("\nPlease enter security parameter \'qbits\':");
     scanf("%[0-9]", qbits);
     getchar();
     
     setup_sys(atoi(rbits), atoi(qbits), P, Ppub, pairing, s);
     printf("System parameters have been set!\n");
-    element_printf("P = %B\n", P);
-    element_printf("Ppub = %B\n", Ppub);
+    element_printf("The random generator P = %B\n", P);
+    element_printf("The public system parameter Ppub = %B\n", Ppub);
     
     
     printf("###########EXTRACT###########\n");
@@ -153,7 +152,7 @@ int main()
     
     printf("Plase enter your ID:");
     scanf("%[ a-zA-Z0-9+*-!.,&*@{}$#]", ID);
-    printf("\nID=%s\n", ID);
+    printf("\n\'ID=%s\' is used as public key to encrypt the message\n", ID);
     getchar();
     get_private_key(ID, pairing, s, Sid);
     get_public_key(ID, pairing, Qid);
@@ -168,13 +167,13 @@ int main()
     printf("\nThe message hash=%s\n", shamessage);
     
     element_init_G1(U, pairing);
-    // What is U here? 
     encryption(shamessage, ID, P, Ppub, U, xor_result, pairing);
     printf("Send <U,V> to the receiver!\n");
     
     printf("##########DECRYPTION##########");
     decryption(Sid, pairing, U, xor_result, xor_result_receiver);
     printf("\nThe recovery message digest is %s\n", xor_result_receiver);
+    printf("We compare the recovery message with the original message in bitwise by hashed message\n");
     printf("The original message digest is %s\n", shamessage);
     
     if (strcmp(xor_result_receiver, shamessage) == 0) {
@@ -183,7 +182,7 @@ int main()
     }
     
     else {
-        printf("Oops!The message can not be decrpted!\n");
+        printf("Oops!The message can not be decrpted properly!\n");
     }
     
     //Free space
