@@ -3,7 +3,7 @@
 //  Identity Based Encryption
 //
 //  Created by SUN Guodong and Liang Wang on 5/2/19.
-//  Copyright © 2019 SUN Guden. All rights reserved.
+//  Copyright © 2019 SUN Guodong. All rights reserved.
 //
 
 
@@ -46,7 +46,7 @@ void encryption(char* shamessage, char* ID, element_t P, element_t P_pub,
 {
     int i;
     char sgid[SIZE];   //Sender gid string representation
-    char shagid[SIZE]; //Sender H2 function result
+    char shagid[SIZE];
     
     element_t r;
     element_t Qid;
@@ -126,7 +126,7 @@ int main()
     memset(xor_result, 0, sizeof(char)*SIZE);
     memset(xor_result_receiver, 0, sizeof(char)*SIZE);
     
-    pairing_t pairing;   //The pair of bilinear map
+    pairing_t pairing;
     
     element_t P, Ppub, s, U, Qid, Sid;
     mpz_t messagehash;
@@ -142,6 +142,7 @@ int main()
     
     setup_sys(atoi(rbits), atoi(qbits), P, Ppub, pairing, s);
     printf("System parameters have been set!\n");
+    
     element_printf("The random generator P = %B\n", P);
     element_printf("The public system parameter Ppub = %B\n", Ppub);
     
@@ -163,11 +164,13 @@ int main()
     getchar();
     printf("The original message=%s", message);
     
+    //shamessage is send to recevier for comparison.
     sha_fun(message, shamessage);   //Get the message digest
     printf("\nThe message hash=%s\n", shamessage);
     
     element_init_G1(U, pairing);
     encryption(shamessage, ID, P, Ppub, U, xor_result, pairing);
+    
     printf("Send <U,V> to the receiver!\n");
     
     printf("##########DECRYPTION##########");
